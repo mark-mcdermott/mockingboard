@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Gem, Download } from 'lucide-react'
+import { Gem, Download, X } from 'lucide-react'
 import { toPng } from 'html-to-image'
 
 function App() {
@@ -45,6 +45,11 @@ function App() {
     link.download = 'mockingboard.png'
     link.href = dataUrl
     link.click()
+  }
+
+  const handleRemove = (src: string) => {
+    setImages((prev) => prev.filter((s) => s !== src))
+    URL.revokeObjectURL(src)
   }
 
   return (
@@ -94,14 +99,22 @@ function App() {
                 className="columns-2 gap-4 md:columns-3 lg:columns-4"
               >
                 {images.map((src) => (
-                  <img
-                    key={src}
-                    src={src}
-                    alt=""
-                    className="mb-4 w-full break-inside-avoid rounded-md border border-edge"
-                  />
-                ))}  
-              </div> 
+                  <div key={src} className="group relative mb-4 break-inside-avoid">
+                    <img
+                      src={src}
+                      alt=""
+                      className="w-full rounded-md border border-edge"
+                    />
+                    <button
+                      onClick={() => handleRemove(src)}
+                      aria-label="Remove image"
+                      className="absolute right-2 top-2 inline-flex size-7 items-center justify-center rounded-full bg-ink text-canvas opacity-0 shadow-md transition-opacity group-hover:opacity-100"
+                    >
+                      <X className="size=4" strokeWidth={1.5} />
+                    </button>
+                  </div> 
+            ))}
+            </div>
             </section>
           )}          
         </main>
