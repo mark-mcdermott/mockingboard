@@ -1,10 +1,19 @@
-import { useState } from 'react'
-import { Gem } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Gem, Download } from 'lucide-react'
+import { toPng } from 'html-to-image'
 
 function App() {
   const [images, setImages] = useState<string[]>([])
   const [dragCount, setDragCount] = useState(0)
+  const boardRef = useRef<HTMLDivElement>(null)
   const isDragging = dragCount > 0
+  const isEmpty = images.length === 0
+
+  const handleFiles = (files: FileList | null) => {
+    if (!files) return
+    const urls = Array.from(files).map((file) => URL.createObjectURL(file))
+    setImages((prev) => [...prev, ...urls])
+  }
 
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault()
@@ -26,13 +35,17 @@ function App() {
     handleFiles(e.dataTransfer.files)
   }
 
-  const handleFiles = (files: FileList | null) => {
-    if (!files) return
-    const urls = Array.from(files).map((file) => URL.createObjectURL(file))
-    setImages((prev) => [...prev, ...urls])
+  const handleExport = async () => {
+    if (!boardRef.current) return
+    const dataUrl = await toPng(boardRef.current, {
+      pixelRatio: 2,
+      backgroundColor: '#FAF6F1'
+    })
+    const link = document.createElement('a')
+    link.download = 'mockingboard.png'
+    link.href = dataUrl
+    link.click()
   }
-
-  const isEmpty = images.length === 0
 
   return (
     <div 
@@ -76,7 +89,10 @@ function App() {
             </section>
           ) : (
             <section className="py-8">
-              <div className="columns-2 gap-4 md:columns-3 lg:colums-4">
+              <div
+                ref={boardRef}
+                className="columns-2 gap-4 md:columns-3 lg:columns-4"
+              >
                 {images.map((src) => (
                   <img
                     key={src}
@@ -90,6 +106,16 @@ function App() {
           )}          
         </main>
       </div>
+
+      {!isEmpty && (
+        <button
+          onClick={handleExport}
+          className="fixed bottom-6 right-6 inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-medium text-canvas shadow-lg"
+          >
+            <Download className="size-4" strokeWidth={1.5} />
+            Export PNG
+          </button>
+      )}
     </div>
   )
 }
