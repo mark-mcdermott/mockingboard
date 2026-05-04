@@ -9,3 +9,14 @@
   --color-ink-muted: #8C877F;
   --font-serif: "Bodoni Moda", ui-serif, Georgia, serif;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+      --color-canvas: #0E0E0E;
+      --color-surface: #151515;
+      --color-edge: #2A2A2A;
+      --color-ink: #F5F5F5;
+      --color-ink-soft: #B8B8B8;
+      --color-ink-muted: #7A7A7A;
+  }
+}

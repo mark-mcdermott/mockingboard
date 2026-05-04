@@ -37,9 +37,12 @@ function App() {
 
   const handleExport = async () => {
     if (!boardRef.current) return
+    const canvasColor = getComputedStyle(document.documentElement)
+      .getPropertyValue('--color-canvas')
+      .trim()
     const dataUrl = await toPng(boardRef.current, {
       pixelRatio: 2,
-      backgroundColor: '#FAF6F1'
+      backgroundColor: canvasColor
     })
     const link = document.createElement('a')
     link.download = 'mockingboard.png'
