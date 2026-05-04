@@ -1,7 +1,9 @@
 import { useRef, useState } from 'react'
-import { Gem, Download } from 'lucide-react'
-import { Tile } from './components/Tile'
 import { toPng } from 'html-to-image'
+import { Header } from './components/Header'
+import { EmptyState } from './components/EmptyState'
+import { Board } from './components/Board'
+import { ExportButton } from './components/ExportButton'
 
 function App() {
   const [images, setImages] = useState<string[]>([])
@@ -70,56 +72,18 @@ function App() {
       onDrop={handleDrop}
     >
       <div className="mx-auto max-w-7xl px-5 md:px-12">
-        <header className="py-6">
-          <span className="inline-flex items-center gap-1 font-serif text-xl font-medium tracking-tight">
-            mockingboard
-            <Gem className="size-3" strokeWidth={1.5} />
-          </span>
-        </header>
+        <Header />
         <main>
           {isEmpty ? (
-            <section className="py-16 md:py-24">
-              <h1 className="font-serif font-medium tracking-tight text-3xl md:text-5xl">
-                Drop mockups. Arrange freely. Export one beautiful PNG.
-              </h1>
-              <p className="mt-6 text-base md:text-lg text-ink-soft">
-                Drag images in to get started.
-              </p>
-              <label className="mt-8 inline-flex cursor-pointer items-center rounded-md bg-ink px-4 py-2 text-sm font-medium text-canvas">
-                Choose images
-                <input 
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  className="hidden"
-                  onChange={(e) => handleFiles(e.target.files)}
-                />
-              </label>
-            </section>
+            <EmptyState onFilesPicked={handleFiles} />
           ) : (
-            <section className="py-8">
-              <div
-                ref={boardRef}
-                className="columns-2 gap-4 md:columns-3 lg:columns-4"
-              >
-                {images.map((src) => (
-                  <Tile key={src} src={src} onRemove={handleRemove} />
-
-                ))}
-            </div>
-            </section>
+            <Board images={images} onRemove={handleRemove} ref={boardRef} />
           )}          
         </main>
       </div>
 
       {!isEmpty && (
-        <button
-          onClick={handleExport}
-          className="fixed bottom-6 right-6 inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-medium text-canvas shadow-lg"
-          >
-            <Download className="size-4" strokeWidth={1.5} />
-            Export PNG
-          </button>
+        <ExportButton onExport={handleExport} />
       )}
     </div>
   )
