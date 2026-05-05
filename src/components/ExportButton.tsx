@@ -8,7 +8,7 @@ export function ExportButton({ onExport }: ExportButtonProps) {
   return (
     <button
       onClick={onExport}
-      className="fixed bottom-6 right-6 inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-medium text-canvas shadow-lg"
+      className="fixed bottom-6 right-6 inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-medium text-canvas shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
       >
         <Download className="size-4" strokeWidth={1.5} />
         Export PNG

@@ -43,7 +43,7 @@ export function Tile({ image, onRemove }: TileProps) {
       <button
         onClick={() => onRemove(image.id)}
         aria-label="Remove image"
-        className="absolute right-2 top-2 inline-flex size-7 items-center justify-center rounded-full bg-ink text-canvas opacity-0 shadow-md transition-opacity group-hover:opacity-100"
+        className="absolute right-2 top-2 inline-flex size-7 items-center justify-center rounded-full bg-ink text-canvas opacity-0 shadow-md transition-opacity group-hover:opacity-100 focus-visible:ring-ink focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
       >
         <X className="size=4" strokeWidth={1.5} />
       </button>

@@ -11,7 +11,7 @@ export function EmptyState({ onFilesPicked }: EmptyStateProps ) {
       <p className="mt-6 text-base md:text-lg text-ink-soft">
         Drag images in to get started.
       </p>
-      <label className="mt-8 inline-flex cursor-pointer items-center rounded-md bg-ink px-4 py-2 text-sm font-medium text-canvas">
+      <label className="mt-8 inline-flex cursor-pointer items-center rounded-md bg-ink px-4 py-2 text-sm font-medium text-canvas focus-within:ring-2 focus-within:ring-ink focus-within:ring-offset-2 focus-within:ring-offset-canvas">
         Choose images
         <input 
           type="file"
