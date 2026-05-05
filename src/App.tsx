@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import type { Mockup } from './types'
 import { toPng } from 'html-to-image'
 import { Header } from './components/Header'
 import { EmptyState } from './components/EmptyState'
@@ -6,7 +7,7 @@ import { Board } from './components/Board'
 import { ExportButton } from './components/ExportButton'
 
 function App() {
-  const [images, setImages] = useState<string[]>([])
+  const [images, setImages] = useState<Mockup[]>([])
   const [dragCount, setDragCount] = useState(0)
   const boardRef = useRef<HTMLDivElement>(null)
   const isDragging = dragCount > 0
@@ -14,8 +15,12 @@ function App() {
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return
-    const urls = Array.from(files).map((file) => URL.createObjectURL(file))
-    setImages((prev) => [...prev, ...urls])
+    const newImages: Mockup[] = Array.from(files).map((file) => ({
+      id: crypto.randomUUID(),
+      src: URL.createObjectURL(file),
+      name: file.name,
+    }))
+    setImages((prev) => [...prev, ...newImages])
   }
 
   const handleDragEnter = (e: React.DragEvent) => {
@@ -53,9 +58,10 @@ function App() {
     link.click()
   }
 
-  const handleRemove = (src: string) => {
-    setImages((prev) => prev.filter((s) => s !== src))
-    URL.revokeObjectURL(src)
+  const handleRemove = (id: string) => {
+    const target = images.find((img) => img.id === id)
+    if (target) URL.revokeObjectURL(target.src)
+    setImages((prev) => prev.filter((img) => img.id !== id))
   }
 
   return (

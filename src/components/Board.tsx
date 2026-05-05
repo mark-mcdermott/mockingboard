@@ -1,8 +1,9 @@
 import { Tile } from './Tile'
+import type { Mockup } from '../types'
 
 type BoardProps = {
-  images: string[]
-  onRemove: (src: string) => void
+  images: Mockup[]
+  onRemove: (id: string) => void
   ref?: React.Ref<HTMLDivElement>
 }
 
@@ -13,8 +14,8 @@ export function Board({ images, onRemove, ref }: BoardProps) {
         ref={ref}
         className="columns-2 gap-4 md:columns-3 lg:columns-4"
       >
-        {images.map((src) => (
-          <Tile key={src} src={src} onRemove={onRemove} />
+        {images.map((image) => (
+          <Tile key={image.id} image={image} onRemove={onRemove} />
 
         ))}
       </div>
