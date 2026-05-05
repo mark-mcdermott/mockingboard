@@ -5,6 +5,8 @@ import { Header } from './components/Header'
 import { EmptyState } from './components/EmptyState'
 import { Board } from './components/Board'
 import { ExportButton } from './components/ExportButton'
+import { Hero } from './components/Hero'
+import { BoardSurface } from './components/BoardSurface'
 
 function App() {
   const [images, setImages] = useState<Mockup[]>([])
@@ -98,17 +100,20 @@ function App() {
     >
       <div className="mx-auto max-w-7xl px-5 md:px-12">
         <Header />
-        <main>
-          {isEmpty ? (
-            <EmptyState onFilesPicked={handleFiles} />
-          ) : (
-            <Board 
-              ref={boardRef} 
-              images={images} 
-              onRemove={handleRemove} 
-              onReorder={handleReorder}  
-            />
-          )}          
+        <Hero />
+        <main className="pb-8">
+          <BoardSurface>
+            {isEmpty ? (
+              <EmptyState onFilesPicked={handleFiles} />
+            ) : (
+              <Board 
+                ref={boardRef} 
+                images={images} 
+                onRemove={handleRemove} 
+                onReorder={handleReorder}  
+              />
+            )}          
+          </BoardSurface>
         </main>
       </div>
 

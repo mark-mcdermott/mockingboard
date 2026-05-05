@@ -37,26 +37,24 @@ export function Board({ images, onRemove, onReorder, ref }: BoardProps) {
     onReorder(arrayMove(images, oldIndex, newIndex))
   }
   return (
-    <section className="py-8">
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext
+        items={images.map((img) => img.id)}
+        strategy={rectSortingStrategy}
       >
-        <SortableContext
-          items={images.map((img) => img.id)}
-          strategy={rectSortingStrategy}
+        <div
+          ref={ref}
+          className="columns-2 gap-4 md:columns-3 lg:columns-4"
         >
-          <div
-            ref={ref}
-            className="columns-2 gap-4 md:columns-3 lg:columns-4"
-          >
-            {images.map((image) => (
-              <Tile key={image.id} image={image} onRemove={onRemove} />
-            ))}
-          </div>
-        </SortableContext>
-      </DndContext>
-    </section>
+          {images.map((image) => (
+            <Tile key={image.id} image={image} onRemove={onRemove} />
+          ))}
+        </div>
+      </SortableContext>
+    </DndContext>
   )
 }
