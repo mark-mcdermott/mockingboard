@@ -28,7 +28,7 @@ export function Tile({ image, onRemove }: TileProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className="group mb-4 break-inside-avoid overflow-hidden rounded-md border border-edge bg-surface"
+      className="relative group mb-4 break-inside-avoid overflow-hidden rounded-md border border-edge bg-surface"
     >
       <div
         {...attributes}
@@ -43,7 +43,7 @@ export function Tile({ image, onRemove }: TileProps) {
           strokeWidth={1.5}
         />
       </div>
-      <div className="relative">
+      <div>
         <img
           src={image.src}
           alt={image.name}
@@ -53,9 +53,9 @@ export function Tile({ image, onRemove }: TileProps) {
         <button 
           onClick={() => onRemove(image.id)}
           aria-label="Remove image"
-          className="absolute right-2 top-2 inline-flex size-7 items-center justify-center rounded-full bg-ink text-canvas opacity-0 shadow-md transition-opacity group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+          className="absolute left-1 top-1 inline-flex size-6 cursor-pointer items-center justify-center rounded-full border border-edge bg-canvas text-ink opacity-0 backgrop-blur-sm transition group-hover:opacity-100 hover:bg-surface focus-visibile:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
         >
-          <X className="size-4" strokeWidth={1.5} />
+          <X className="size-3.5" strokeWidth={1.25} />
         </button>
       </div>
     </div>
