@@ -1,4 +1,6 @@
 import { X } from 'lucide-react'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import type { Mockup } from '../types'
 
 type TileProps = {
@@ -7,8 +9,29 @@ type TileProps = {
 }
 
 export function Tile({ image, onRemove }: TileProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: image.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+  }
+
   return (
-    <div key={image.src} className="group relative mb-4 break-inside-avoid">
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="group relative mb-4 break-inside-avoid cursor-grab"
+    >
       <img
         src={image.src}
         alt={image.name}

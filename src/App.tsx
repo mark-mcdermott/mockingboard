@@ -58,6 +58,10 @@ function App() {
     handleFiles(e.dataTransfer.files)
   }
 
+  const handleReorder = (newImages: Mockup[]) => {
+    setImages(newImages)
+  }
+
   const handleExport = async () => {
     if (!boardRef.current) return
     const canvasColor = getComputedStyle(document.documentElement)
@@ -98,7 +102,12 @@ function App() {
           {isEmpty ? (
             <EmptyState onFilesPicked={handleFiles} />
           ) : (
-            <Board images={images} onRemove={handleRemove} ref={boardRef} />
+            <Board 
+              ref={boardRef} 
+              images={images} 
+              onRemove={handleRemove} 
+              onReorder={handleReorder}  
+            />
           )}          
         </main>
       </div>
