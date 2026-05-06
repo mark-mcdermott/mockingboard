@@ -7,6 +7,8 @@ import { Board } from './components/Board'
 import { ExportButton } from './components/ExportButton'
 import { Hero } from './components/Hero'
 import { BoardSurface } from './components/BoardSurface'
+import { PrivacyNote } from './components/PrivacyNote'
+import { Footer } from './components/Footer'
 
 function App() {
   const [images, setImages] = useState<Mockup[]>([])
@@ -87,7 +89,7 @@ function App() {
 
   return (
     <div 
-      className={`min-h-screen text-ink transition-colors
+      className={`flex min-h-screen flex-col text-ink transition-colors
     ${
         isDragging
           ? 'bg-surface ring-2 ring-inset ring-ink-muted'
@@ -98,8 +100,10 @@ function App() {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <div className="mx-auto max-w-7xl px-5 md:px-12">
-        <Header />
+      <div className="mx-auto w-full max-w-7xl flex-1 px-5 md:px-12">
+        <Header>
+          {!isEmpty && <ExportButton onExport={handleExport} />}
+        </Header>
         <Hero />
         <main className="pb-8">
           <BoardSurface>
@@ -114,8 +118,10 @@ function App() {
               />
             )}          
           </BoardSurface>
+          <PrivacyNote />
         </main>
       </div>
+      <Footer />
 
       {!isEmpty && (
         <>
@@ -124,7 +130,6 @@ function App() {
               This board is huge. Export may fail in some browsers.
             </div>
           )}
-          <ExportButton onExport={handleExport} />
         </>
       )}
     </div>
