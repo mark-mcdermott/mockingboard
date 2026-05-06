@@ -3,9 +3,53 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import type { Mockup } from '../types'
 
+type TileCardProps = {
+  image: Mockup
+  isOverlay?: boolean
+  dragHandleProps?: React.HTMLAttributes<HTMLDivElement>
+  children?: React.ReactNode
+}
+
+export function TileCard({ 
+  image, 
+  isOverlay = false,
+  dragHandleProps,
+  children,  
+}: TileCardProps) {
+  return (
+    <div
+      className={`overflow-hidden rounded-md border-edge bg-surface ${
+        isOverlay ? 'scale-[1.03] shadow-2xl' : ''
+      }`}
+    >
+      <div
+        {...dragHandleProps}
+        className="flex cursor-grab items-center justify-between gap-2 px-3 py-2 active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-insert focus-visible:ring-ink"
+      >
+        <span className="truncate font-mono text-xs text-ink-soft">
+          {image.name}
+        </span>
+        <GripVertical
+          className="size-3.5 shrink-0 text-ink-muted"
+          strokeWidth={1.5}
+        />
+      </div>
+      <div className="relative">
+        <img
+          src={image.src}
+          alt={image.name}
+          draggable={false}
+          className="block w-full"
+        />
+        {children}
+      </div>
+    </div>
+  )
+}
+
 type TileProps = {
   image: Mockup
-  onRemove: (src: string) => void
+  onRemove: (id: string) => void
 }
 
 export function Tile({ image, onRemove }: TileProps) {
@@ -25,39 +69,23 @@ export function Tile({ image, onRemove }: TileProps) {
   }
 
   return (
-    <div
+    <div 
       ref={setNodeRef}
       style={style}
-      className="relative group mb-4 break-inside-avoid overflow-hidden rounded-md border border-edge bg-surface"
+      className="group mb-4 break-inside-avoid"
     >
-      <div
-        {...attributes}
-        {...listeners}
-        className="flex cursor-grab items-center justify-between gap-2 px-3 py-2 active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-insert focus-visible:ring-ink"
+      <TileCard
+        image={image}
+        dragHandleProps={{ ...attributes, ...listeners }}
       >
-        <span className="truncate font-mono text-xs text-ink-soft">
-          {image.name}
-        </span>
-        <GripVertical
-          className="size-3.5 shrink-0 text-ink-muted"
-          strokeWidth={1.5}
-        />
-      </div>
-      <div>
-        <img
-          src={image.src}
-          alt={image.name}
-          draggable={false}
-          className="block w-full"
-        />
-        <button 
+        <button
           onClick={() => onRemove(image.id)}
           aria-label="Remove image"
-          className="absolute left-1 top-1 inline-flex size-6 cursor-pointer items-center justify-center rounded-full border border-edge bg-canvas text-ink opacity-0 backgrop-blur-sm transition group-hover:opacity-100 hover:bg-surface focus-visibile:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+          className="absolute left-2 top-2 inline-flex size-6 cursor-pointer items-center justify-center rounded-full border border-edge bg-canvas/70 text-ink opacity-0 backdrop-blur-sm transition group-hover:opacity-100 hover:bg-canvas focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
         >
           <X className="size-3.5" strokeWidth={1.25} />
         </button>
-      </div>
+      </TileCard>
     </div>
   )
 }

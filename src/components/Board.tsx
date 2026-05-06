@@ -1,7 +1,9 @@
-import { Tile } from './Tile'
+import { useState } from 'react'
+import { Tile, TileCard } from './Tile'
 import type { Mockup } from '../types'
 import {
   DndContext,
+  DragOverlay,
   PointerSensor,
   KeyboardSensor,
   useSensor,
@@ -24,10 +26,17 @@ type BoardProps = {
 }
 
 export function Board({ images, onRemove, onReorder, ref }: BoardProps) {
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const activeImage = activeId ? images.find((img) => img.id === activeId) : null
+  
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   )
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string)
+  }
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
@@ -40,6 +49,7 @@ export function Board({ images, onRemove, onReorder, ref }: BoardProps) {
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
       <SortableContext
@@ -55,6 +65,9 @@ export function Board({ images, onRemove, onReorder, ref }: BoardProps) {
           ))}
         </div>
       </SortableContext>
+      <DragOverlay>
+        {activeImage ? <TileCard image={activeImage} isOverlay /> : null}
+      </DragOverlay>
     </DndContext>
   )
 }
