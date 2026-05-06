@@ -14,6 +14,7 @@ function App() {
   const [images, setImages] = useState<Mockup[]>([])
   const [dragCount, setDragCount] = useState(0)
   const [boardTooLarge, setBoardTooLarge] = useState(false)
+  const [showError, setShowError] = useState(false)
   const boardRef = useRef<HTMLDivElement>(null)
   const isDragging = dragCount > 0
   const isEmpty = images.length === 0
@@ -32,8 +33,23 @@ function App() {
     return () => observer.disconnect()
   }, [images])
 
+  useEffect(() => {
+    if (!showError) return
+    const timer = setTimeout(() => setShowError(false), 3000)
+    return () => clearTimeout(timer)
+  })
+
   const handleFiles = (files: FileList | null) => {
     if (!files) return
+    const allFiles = Array.from(files)
+    const imageFiles = allFiles.filter((f) => f.type.startsWith('image/'))
+
+    if (imageFiles.length < allFiles.length) {
+      setShowError(true)
+    }
+
+    if (imageFiles.length === 0) return
+
     const newImages: Mockup[] = Array.from(files).map((file) => ({
       id: crypto.randomUUID(),
       src: URL.createObjectURL(file),
@@ -89,12 +105,7 @@ function App() {
 
   return (
     <div 
-      className={`flex min-h-screen flex-col text-ink transition-colors
-    ${
-        isDragging
-          ? 'bg-surface ring-2 ring-inset ring-ink-muted'
-          : 'bg-canvas'
-      }`}
+      className="flex min-h-screen flex-col text-ink"
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
@@ -106,7 +117,7 @@ function App() {
         </Header>
         <Hero />
         <main className="pb-8">
-          <BoardSurface>
+          <BoardSurface isDragging={isDragging} showError={showError}>
             {isEmpty ? (
               <EmptyState onFilesPicked={handleFiles} />
             ) : (
