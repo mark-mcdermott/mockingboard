@@ -8,6 +8,7 @@ import { ExportButton } from './components/ExportButton'
 import { Hero } from './components/Hero'
 import { BoardSurface } from './components/BoardSurface'
 import { PrivacyNote } from './components/PrivacyNote'
+import { ExportToast } from './components/ExportToast'
 import { Footer } from './components/Footer'
 
 function App() {
@@ -15,6 +16,8 @@ function App() {
   const [dragCount, setDragCount] = useState(0)
   const [boardTooLarge, setBoardTooLarge] = useState(false)
   const [showError, setShowError] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
+  const [showExportToast, setShowExportToast] = useState(false)
   const boardRef = useRef<HTMLDivElement>(null)
   const isDragging = dragCount > 0
   const isEmpty = images.length === 0
@@ -37,7 +40,13 @@ function App() {
     if (!showError) return
     const timer = setTimeout(() => setShowError(false), 3000)
     return () => clearTimeout(timer)
-  })
+  }, [showError])
+
+  useEffect(() => {
+    if (!showExportToast) return
+    const timer = setTimeout(() => setShowExportToast(false), 3000)
+    return () => clearTimeout(timer)
+  }, [showExportToast])
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return
@@ -83,18 +92,24 @@ function App() {
   }
 
   const handleExport = async () => {
-    if (!boardRef.current) return
-    const canvasColor = getComputedStyle(document.documentElement)
-      .getPropertyValue('--color-canvas')
-      .trim()
-    const dataUrl = await toPng(boardRef.current, {
-      pixelRatio: 2,
-      backgroundColor: canvasColor
-    })
-    const link = document.createElement('a')
-    link.download = 'mockingboard.png'
-    link.href = dataUrl
-    link.click()
+    if (!boardRef.current || isExporting) return
+    setIsExporting(true)
+    try {
+      const canvasColor = getComputedStyle(document.documentElement)
+        .getPropertyValue('--color-canvas')
+        .trim()
+      const dataUrl = await toPng(boardRef.current, {
+        pixelRatio: 2,
+        backgroundColor: canvasColor,
+      })
+      const link = document.createElement('a')
+      link.download = 'mockingboard.png'
+      link.href = dataUrl
+      link.click()
+      setShowExportToast(true)
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   const handleRemove = (id: string) => {
@@ -113,7 +128,8 @@ function App() {
     >
       <div className="mx-auto w-full max-w-7xl flex-1 px-5 md:px-12">
         <Header>
-          {!isEmpty && <ExportButton onExport={handleExport} />}
+          {!isEmpty && (<ExportButton onExport={handleExport} isExporting={isExporting} />
+          )}
         </Header>
         <Hero />
         <main className="pb-8">
@@ -137,9 +153,12 @@ function App() {
       {!isEmpty && (
         <>
           {boardTooLarge && (
-            <div className="fixed bottom-20 right-6 z-10 max-w-xs rounded-md bg-surface px-3 py-2 text-xs text-ink-soft shadow-md">
+            <div className="fixed bottom-6 right-6 z-10 max-w-xs rounded-md bg-surface px-3 py-2 text-xs text-ink-soft shadow-md">
               This board is huge. Export may fail in some browsers.
             </div>
+          )}
+          {showExportToast && (
+            <ExportToast onDismiss={() => setShowExportToast(false)} />
           )}
         </>
       )}
