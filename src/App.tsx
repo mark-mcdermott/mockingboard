@@ -10,31 +10,18 @@ import { BoardSurface } from './components/BoardSurface'
 import { PrivacyNote } from './components/PrivacyNote'
 import { ExportToast } from './components/ExportToast'
 import { Footer } from './components/Footer'
+import { SizeWarningModal } from './components/SizeWarningModal'
 
 function App() {
   const [images, setImages] = useState<Mockup[]>([])
   const [dragCount, setDragCount] = useState(0)
-  const [boardTooLarge, setBoardTooLarge] = useState(false)
+  const [showSizeModal, setShowSizeModal] = useState(false)
   const [showError, setShowError] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
   const [showExportToast, setShowExportToast] = useState(false)
   const boardRef = useRef<HTMLDivElement>(null)
   const isDragging = dragCount > 0
   const isEmpty = images.length === 0
-
-  useEffect(() => {
-    const board = boardRef.current
-    if (!board) {
-      setBoardTooLarge(false)
-      return
-    }
-    const observer = new ResizeObserver(() => {
-      const { width, height } = board.getBoundingClientRect()
-      setBoardTooLarge(width * 2 > 4096 || height * 2 > 4096)
-    })
-    observer.observe(board)
-    return () => observer.disconnect()
-  }, [images])
 
   useEffect(() => {
     if (!showError) return
@@ -91,8 +78,15 @@ function App() {
     setImages(newImages)
   }
 
-  const handleExport = async () => {
+  const handleExport = async (pixelRatio: number = 2) => {
     if (!boardRef.current || isExporting) return
+    if (pixelRatio === 2) {
+      const { width, height } = boardRef.current.getBoundingClientRect()
+      if (width * 2 > 4096 || height * 2 > 4096) {
+        setShowSizeModal(true)
+        return
+      }
+    }
     setIsExporting(true)
     try {
       const canvasColor = getComputedStyle(document.documentElement)
@@ -101,6 +95,7 @@ function App() {
       const dataUrl = await toPng(boardRef.current, {
         pixelRatio: 2,
         backgroundColor: canvasColor,
+        skipFonts: true,
       })
       const link = document.createElement('a')
       link.download = 'mockingboard.png'
@@ -110,6 +105,11 @@ function App() {
     } finally {
       setIsExporting(false)
     }
+  }
+
+  const handleReduceScale = () => {
+    setShowSizeModal(false)
+    handleExport(1)
   }
 
   const handleRemove = (id: string) => {
@@ -152,10 +152,12 @@ function App() {
 
       {!isEmpty && (
         <>
-          {boardTooLarge && (
-            <div className="fixed bottom-6 right-6 z-10 max-w-xs rounded-md bg-surface px-3 py-2 text-xs text-ink-soft shadow-md">
-              This board is huge. Export may fail in some browsers.
-            </div>
+          {showSizeModal && (
+            <SizeWarningModal
+              open={showSizeModal}
+              onClose={() => setShowSizeModal(false)}
+              onReduceScale={handleReduceScale}
+            />
           )}
           {showExportToast && (
             <ExportToast onDismiss={() => setShowExportToast(false)} />
