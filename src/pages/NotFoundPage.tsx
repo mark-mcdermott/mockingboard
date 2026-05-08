@@ -1,7 +1,10 @@
 import { Link } from 'react-router'
 import { Header } from '../components/Header'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export function NotFoundPage() {
+  useDocumentTitle('Page not found — Mockingboard')
+
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-5 md:px-12">
       <Header />

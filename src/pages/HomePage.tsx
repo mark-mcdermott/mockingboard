@@ -10,8 +10,11 @@ import { BoardSurface } from '../components/BoardSurface'
 import { PrivacyNote } from '../components/PrivacyNote'
 import { ExportToast } from '../components/ExportToast'
 import { SizeWarningModal } from '../components/SizeWarningModal'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export function HomePage() {
+  useDocumentTitle('Mockingboard')
+  
   const [images, setImages] = useState<Mockup[]>([])
   const [dragCount, setDragCount] = useState(0)
   const [showSizeModal, setShowSizeModal] = useState(false)
