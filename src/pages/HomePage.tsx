@@ -11,16 +11,20 @@ import { PrivacyNote } from '../components/PrivacyNote'
 import { ExportToast } from '../components/ExportToast'
 import { SizeWarningModal } from '../components/SizeWarningModal'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { 
+  IOS_CANVAS_LIMIT,
+  computeMaxSafeScale,
+} from '../lib/exportLimits'
 
 export function HomePage() {
   useDocumentTitle('Mockingboard')
   
   const [images, setImages] = useState<Mockup[]>([])
   const [dragCount, setDragCount] = useState(0)
-  const [showSizeModal, setShowSizeModal] = useState(false)
+  const [sizeModal, setSizeModal] = useState<'reduce' | 'remove' | null>(null)
   const [showError, setShowError] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
-  const [showExportToast, setShowExportToast] = useState(false)
+  const [exportToastScale, setExportToastScale] = useState<number | null>(null)
   const boardRef = useRef<HTMLDivElement>(null)
   const isDragging = dragCount > 0
   const isEmpty = images.length === 0
@@ -32,10 +36,10 @@ export function HomePage() {
   }, [showError])
 
   useEffect(() => {
-    if (!showExportToast) return
-    const timer = setTimeout(() => setShowExportToast(false), 3000)
+    if (!exportToastScale) return
+    const timer = setTimeout(() => setExportToastScale(null), 3000)
     return () => clearTimeout(timer)
-  }, [showExportToast])
+  }, [exportToastScale])
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return
@@ -80,14 +84,15 @@ export function HomePage() {
     setImages(newImages)
   }
 
-  const handleExport = async (pixelRatio: number = 2) => {
+  const handleExport = async (scale: number) => {
     if (!boardRef.current || isExporting) return
-    if (pixelRatio === 2) {
-      const { width, height } = boardRef.current.getBoundingClientRect()
-      if (width * 2 > 4096 || height * 2 > 4096) {
-        setShowSizeModal(true)
-        return
-      }
+    const { width, height } = boardRef.current.getBoundingClientRect()
+    const pixelRatio = scale === 0 ? computeMaxSafeScale(width, height) : scale
+    if (width * pixelRatio > IOS_CANVAS_LIMIT || height * pixelRatio > IOS_CANVAS_LIMIT) {
+      const fitsAt1x =
+        width <= IOS_CANVAS_LIMIT && height <= IOS_CANVAS_LIMIT
+      setSizeModal(fitsAt1x ? 'reduce' : 'remove')
+      return
     }
     setIsExporting(true)
     try {
@@ -95,22 +100,22 @@ export function HomePage() {
         .getPropertyValue('--color-canvas')
         .trim()
       const dataUrl = await toPng(boardRef.current, {
-        pixelRatio: 2,
+        pixelRatio,
         backgroundColor: canvasColor,
         skipFonts: true,
       })
       const link = document.createElement('a')
-      link.download = 'mockingboard.png'
+      link.download = `mockingboard-${pixelRatio}x.png`
       link.href = dataUrl
       link.click()
-      setShowExportToast(true)
+      setExportToastScale(pixelRatio)
     } finally {
       setIsExporting(false)
     }
   }
-
+ 
   const handleReduceScale = () => {
-    setShowSizeModal(false)
+    setSizeModal(null)
     handleExport(1)
   }
 
@@ -153,15 +158,17 @@ export function HomePage() {
 
       {!isEmpty && (
         <>
-          {showSizeModal && (
+          {sizeModal && (
             <SizeWarningModal
-              open={showSizeModal}
-              onClose={() => setShowSizeModal(false)}
+              mode={sizeModal}
+              onClose={() => setSizeModal(null)}
               onReduceScale={handleReduceScale}
             />
           )}
-          {showExportToast && (
-            <ExportToast onDismiss={() => setShowExportToast(false)} />
+          {exportToastScale !== null && (
+            <ExportToast 
+              scale={exportToastScale}
+              onDismiss={() => setExportToastScale(null)} />
           )}
         </>
       )}

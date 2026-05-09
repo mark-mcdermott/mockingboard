@@ -2,26 +2,25 @@ import { useEffect } from 'react'
 import { CircleAlert } from 'lucide-react'
 
 type SizeWarningModalProps = {
-  open: boolean
+  mode: 'reduce' | 'remove'
   onClose: () => void
   onReduceScale: () => void
 }
 
 export function SizeWarningModal({
-  open,
+  mode,
   onClose,
   onReduceScale,
 }: SizeWarningModalProps) {
   useEffect(() => {
-    if (!open) return
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [open, onClose])
+  }, [onClose])
 
-  if (!open) return null
+  const isReduce = mode === 'reduce'
 
   return (
     <div
@@ -41,9 +40,19 @@ export function SizeWarningModal({
           id="size-warning-title"
           className="font-serif text-xl font-medium tracking-tight"
         >
-          This board is too large to export.
-          <br />
-          Try reducing scale.
+          {isReduce ? (
+            <>
+              This board is too large to export at this scale.
+              <br />
+              Try reducing scale.
+            </>
+          ) : (
+            <>
+              This board is too large to export.
+              <br />
+              Remove some images to make it smaller.
+            </>
+          )}
         </p>
         <div className="mt-2 flex gap-2">
           <button
@@ -52,12 +61,14 @@ export function SizeWarningModal({
           >
             Close
           </button>
-          <button 
-            onClick={onReduceScale}
-            className="cursor-pointer rounded-md bg-ink px-4 py-2 text-sm font-medium text-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
-          >
-            Reduce scale
-          </button>
+          {isReduce && (
+            <button 
+              onClick={onReduceScale}
+              className="cursor-pointer rounded-md bg-ink px-4 py-2 text-sm font-medium text-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+            >
+              Reduce scale
+            </button>
+          )}
         </div>
       </div>
     </div>
