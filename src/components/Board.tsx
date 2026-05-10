@@ -9,6 +9,7 @@ import {
   useSensor,
   useSensors,
   closestCenter,
+  type DragStartEvent,
   type DragEndEvent,
 } from '@dnd-kit/core'
 import {
@@ -58,7 +59,7 @@ export function Board({ images, onRemove, onReorder, ref }: BoardProps) {
       >
         <div
           ref={ref}
-          className="columns-2 gap-4 md:columns-3 lg:columns-4"
+          className="columns-1 gap-4 md:columns-2 lg:columns-3 xl:columns-4"
         >
           {images.map((image) => (
             <Tile key={image.id} image={image} onRemove={onRemove} />
