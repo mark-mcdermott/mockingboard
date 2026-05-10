@@ -1,9 +1,9 @@
+import type { Mockup } from '../types'
 import { ClearButton } from '../components/ClearButton'
 import { ClearBoardModal } from '../components/ClearBoardModal'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { fileToDataUrl } from '../lib/files'
 import { useEffect, useRef, useState } from 'react'
-import type { Mockup } from '../types'
 import { toPng } from 'html-to-image'
 import { Header } from '../components/Header'
 import { EmptyState } from '../components/EmptyState'
@@ -15,6 +15,7 @@ import { PrivacyNote } from '../components/PrivacyNote'
 import { ExportToast } from '../components/ExportToast'
 import { SizeWarningModal } from '../components/SizeWarningModal'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { useKeyboardShortcut } from '../hooks/useKeyboardShortcut'
 import { 
   IOS_CANVAS_LIMIT,
   computeMaxSafeScale,
@@ -137,6 +138,35 @@ export function HomePage() {
   const handleRemove = (id: string) => {
     setImages((prev) => prev.filter((img) => img.id !== id))
   }
+
+  const handleFocusedTileDelete = (e: KeyboardEvent) => {
+    const active = document.activeElement
+    if (!(active instanceof HTMLElement)) return
+    if (
+      active instanceof HTMLInputElement || 
+      active instanceof HTMLTextAreaElement
+    ) {
+      return
+    }
+    const tile = active?.closest('[data-mockup-id]')
+    if (!tile) return
+    const id = tile.getAttribute('data-mockup-id')
+    if (!id) return
+    e.preventDefault()
+    handleRemove(id)
+  }
+
+  useKeyboardShortcut('Backspace', handleFocusedTileDelete)
+  useKeyboardShortcut('Delete', handleFocusedTileDelete)
+  useKeyboardShortcut(
+    'e',
+    (e) => {
+      if (isEmpty || isExporting) return
+      e.preventDefault()
+      handleExport(2)
+    },
+    { meta: true },
+  )
 
   return (
     <div 

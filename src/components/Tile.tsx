@@ -72,6 +72,7 @@ export function Tile({ image, onRemove }: TileProps) {
     <div 
       ref={setNodeRef}
       style={style}
+      data-mockup-id={image.id}
       className="group mb-4 break-inside-avoid"
     >
       <TileCard
