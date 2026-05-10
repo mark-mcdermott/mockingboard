@@ -1,3 +1,5 @@
+import { useLocalStorage } from '../hooks/useLocalStorage'
+import { fileToDataUrl } from '../lib/files'
 import { useEffect, useRef, useState } from 'react'
 import type { Mockup } from '../types'
 import { toPng } from 'html-to-image'
@@ -19,7 +21,10 @@ import {
 export function HomePage() {
   useDocumentTitle('Mockingboard')
   
-  const [images, setImages] = useState<Mockup[]>([])
+  const [images, setImages] = useLocalStorage<Mockup[]>(
+    'mockingboard:images',
+    [],
+  )
   const [dragCount, setDragCount] = useState(0)
   const [sizeModal, setSizeModal] = useState<'reduce' | 'remove' | null>(null)
   const [showError, setShowError] = useState(false)
@@ -41,7 +46,7 @@ export function HomePage() {
     return () => clearTimeout(timer)
   }, [exportToastScale])
 
-  const handleFiles = (files: FileList | null) => {
+  const handleFiles = async (files: FileList | null) => {
     if (!files) return
     const allFiles = Array.from(files)
     const imageFiles = allFiles.filter((f) => f.type.startsWith('image/'))
@@ -52,11 +57,13 @@ export function HomePage() {
 
     if (imageFiles.length === 0) return
 
-    const newImages: Mockup[] = Array.from(files).map((file) => ({
-      id: crypto.randomUUID(),
-      src: URL.createObjectURL(file),
-      name: file.name,
-    }))
+    const newImages: Mockup[] = await Promise.all(
+      imageFiles.map(async (file) => ({
+        id: crypto.randomUUID(),
+        src: await fileToDataUrl(file),
+        name: file.name,
+      })),
+    )
     setImages((prev) => [...prev, ...newImages])
   }
 
@@ -120,8 +127,6 @@ export function HomePage() {
   }
 
   const handleRemove = (id: string) => {
-    const target = images.find((img) => img.id === id)
-    if (target) URL.revokeObjectURL(target.src)
     setImages((prev) => prev.filter((img) => img.id !== id))
   }
 
