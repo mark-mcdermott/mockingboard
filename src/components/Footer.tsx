@@ -16,6 +16,10 @@ export function Footer() {
           </a>
         </p>
         <nav className="flex items-center gap-6">
+          <NavLink to="/about" className={({ isActive }) => isActive ? 'underline text-ink' : 'hover:underline'}
+          >
+            About
+          </NavLink>
           <a 
             href="https://github.com/mark-mcdermott/mockingboard"
             className="underline hover:text-ink"
