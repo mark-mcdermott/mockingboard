@@ -20,3 +20,7 @@
       --color-ink-muted: #7A7A7A;
   }
 }
+
+body {
+  background-color: var(--color-canvas);
+}
