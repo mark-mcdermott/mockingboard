@@ -59,9 +59,7 @@ export function PrivacyPage() {
             </h2>
             <div className="mt-4 space-y-4">
               <p>
-                We may use minimal, privacy-friendly analytics to understand
-                how Mockingboard is used — such as page views or feature
-                usage.
+                We use Vercel Web Analytics to understand how Mockingboard is used — pages visited, country, device type, referrer. No cookies, no tracking across sites, no fingerprinting.
               </p>
               <p>
                 This data is anonymous and does not include any of your

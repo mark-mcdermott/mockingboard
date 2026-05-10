@@ -48,6 +48,9 @@ export function AboutPage() {
                 Everything happens locally in your browser. Your images never leave your device. Mockingboard has no servers that see your files, no database, no accounts.
               </p>
               <p>
+                The site uses cookieless analytics (Vercel Web Analytics) to count page views — never your files or anything that identifies you personally.
+              </p>
+              <p>
                 When you close the tab, your board is gone — we don't have anywhere to keep it.
               </p>
             </div>
