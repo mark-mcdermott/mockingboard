@@ -26,7 +26,7 @@ A free, open source tool for arranging mockups into a single shareable image. No
 Requirements: Node.js 20.x or higher.
 
 ` ` ` sh
-git clone https://github.com/your-username/mockingboard.git
+git clone https://github.com/mark-mcdermott/mockingboard.git
 cd mockingboard
 npm install
 npm run dev
