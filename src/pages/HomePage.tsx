@@ -1,3 +1,5 @@
+import { ClearButton } from '../components/ClearButton'
+import { ClearBoardModal } from '../components/ClearBoardModal'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { fileToDataUrl } from '../lib/files'
 import { useEffect, useRef, useState } from 'react'
@@ -29,6 +31,7 @@ export function HomePage() {
   const [sizeModal, setSizeModal] = useState<'reduce' | 'remove' | null>(null)
   const [showError, setShowError] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
+  const [showClearModal, setShowClearModal] = useState(false)
   const [exportToastScale, setExportToastScale] = useState<number | null>(null)
   const boardRef = useRef<HTMLDivElement>(null)
   const isDragging = dragCount > 0
@@ -91,6 +94,11 @@ export function HomePage() {
     setImages(newImages)
   }
 
+  const handleClear = () => {
+    setImages([])
+    setShowClearModal(false)
+  }
+
   const handleExport = async (scale: number) => {
     if (!boardRef.current || isExporting) return
     const { width, height } = boardRef.current.getBoundingClientRect()
@@ -140,7 +148,12 @@ export function HomePage() {
     >
       <div className="mx-auto w-full max-w-7xl flex-1 px-5 md:px-12">
         <Header>
-          {!isEmpty && (<ExportButton onExport={handleExport} isExporting={isExporting} />
+          {!isEmpty && (
+            <div className="flex items-center gap-2">
+              <ClearButton onClick={() => setShowClearModal(true)} />
+              <ExportButton onExport={handleExport} isExporting={isExporting} />
+            </div>
+            
           )}
         </Header>
         <Hero />
@@ -168,6 +181,12 @@ export function HomePage() {
               mode={sizeModal}
               onClose={() => setSizeModal(null)}
               onReduceScale={handleReduceScale}
+            />
+          )}
+          {showClearModal && (
+            <ClearBoardModal
+              onClose={() => setShowClearModal(false)}
+              onConfirm={handleClear}
             />
           )}
           {exportToastScale !== null && (
