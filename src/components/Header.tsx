@@ -1,3 +1,5 @@
+import { ThemeToggle } from './ThemeToggle'
+
 type HeaderProps = {
   children?: React.ReactNode
 }
@@ -31,6 +33,7 @@ export function Header({ children }: HeaderProps) {
         </span>
       </div>
       {children}
+      <ThemeToggle />
     </header>
   )
 }

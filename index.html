@@ -6,6 +6,18 @@
     <meta name="color-scheme" content="light dark" />
 
     <title>Mockingboard</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('mockingboard:theme');
+          if (t === 'light' || t === 'dark') {
+            document.documentElement.setAttribute('data-theme', t);
+          }
+        } catch (e) {
+          /* localStorage unavailable (private browsing, etc) - ignore */
+        }
+      }
+    </script>
     <meta
       name="description"
       content="A free, open source tool for arranging mockups into a single exportable PNG. Drop, arrange, export — no accounts, no upload, no settings."

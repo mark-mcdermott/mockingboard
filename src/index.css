@@ -21,6 +21,26 @@
   }
 }
 
+[data-theme="light"] {
+  --color-canvas: #FAF6F1;
+  --color-surface: #F1EEE9;
+  --color-edge: #E6E1DA;
+  --color-ink: #121212;
+  --color-ink-soft: #5A5851;
+  --color-ink-muted: #8C877F;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --color-canvas: #0E0E0E;
+  --color-surface: #151515;
+  --color-edge: #2A2A2A;
+  --color-ink: #F5F5F5;
+  --color-ink-soft: #B8B8B8;
+  --color-ink-muted: #7A7A7A;
+  color-scheme: dark;
+}
+
 body {
   background-color: var(--color-canvas);
 }
