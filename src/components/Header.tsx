@@ -1,4 +1,5 @@
 import { ThemeToggle } from './ThemeToggle'
+import { NavLink } from 'react-router'
 
 type HeaderProps = {
   children?: React.ReactNode
@@ -6,9 +7,9 @@ type HeaderProps = {
 
 export function Header({ children }: HeaderProps) {
   return (
-    <header className="flex items-center justify-between gap-4 py-4 md:py-6">
-      <div className="inline-flex flex-col">
-        <span className="inline-flex items-center gap-1 font-serif text-lg font-medium tracking-tight md:text-xl">
+    <header className="flex items-end justify-between gap-4 py-4 md:py-6">
+      <NavLink to="/" className="group flex flex-col">
+        <span className="inline-flex items-center gap-1 font-serif text-lg font-medium blur-[0.33px] tracking-tight md:text-xl group-hover:text-ink/75">
         mockingboard
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -28,12 +29,14 @@ export function Header({ children }: HeaderProps) {
           <line x1="6.47" y1="6.5" x2="4.78" y2=".9"/>
         </svg>
         </span>
-        <span className="font-mono text-xs text-ink-soft">
+        <span className="font-mono text-[0.6em] blur-[0.25px] tracking-tighter text-ink-muted/80">
           by floating.is
         </span>
+      </NavLink>
+      <div className="flex items-center gap-2">
+        {children}
+        <ThemeToggle />
       </div>
-      {children}
-      <ThemeToggle />
     </header>
   )
 }

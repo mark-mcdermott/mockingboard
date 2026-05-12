@@ -2,41 +2,59 @@
 
 @theme {
   --color-canvas: #FAF6F1;
+  --color-canvas-soft: #F9F8F4;
   --color-surface: #F1EEE9;
-  --color-edge: #E6E1DA;
+  --color-edge: #bab6b0;
+  --color-edge-soft: #e9e4df;
+  --color-ink-bold: #000000;
   --color-ink: #121212;
   --color-ink-soft: #5A5851;
   --color-ink-muted: #8C877F;
+  --color-ink-ghost: #a7a198;
   --font-serif: "Bodoni Moda", ui-serif, Georgia, serif;
+  --font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+  monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
       --color-canvas: #0E0E0E;
+      --color-canvas-soft: #0E0E0E;
       --color-surface: #151515;
       --color-edge: #2A2A2A;
+      --color-edge-soft: #2A2A2A;
+      --color-ink-bold: #f8f8f8;
       --color-ink: #F5F5F5;
       --color-ink-soft: #B8B8B8;
+      --color-ink-ghost: #B8B8B8;
       --color-ink-muted: #7A7A7A;
   }
 }
 
 [data-theme="light"] {
-  --color-canvas: #FAF6F1;
+  --color-canvas: #f9f6f1;
+  --color-canvas-soft: #F9F8F4;
   --color-surface: #F1EEE9;
-  --color-edge: #E6E1DA;
+  --color-edge: #bab6b0;
+  --color-edge-soft: #e9e4df;
+  --color-ink-bold: #000000;
   --color-ink: #121212;
   --color-ink-soft: #5A5851;
   --color-ink-muted: #8C877F;
+  --color-ink-ghost: #a7a198;
   color-scheme: light;
 }
 
 [data-theme="dark"] {
   --color-canvas: #0E0E0E;
+  --color-canvas-soft: #0E0E0E;
   --color-surface: #151515;
   --color-edge: #2A2A2A;
+  --color-edge-soft: #2A2A2A;
+  --color-ink-bold: #f8f8f8;
   --color-ink: #F5F5F5;
   --color-ink-soft: #B8B8B8;
+  --color-ink-ghost: #B8B8B8;
   --color-ink-muted: #7A7A7A;
   color-scheme: dark;
 }

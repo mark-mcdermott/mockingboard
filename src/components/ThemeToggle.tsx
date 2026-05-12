@@ -27,9 +27,9 @@ export function ThemeToggle() {
     <button
       onClick={() => setTheme(NEXT_THEME[theme])}
       aria-label={LABEL[theme]}
-      className="inline-flex cursor-pointer items-center justify-center rounded-md border border-edge bg-transparent p-2 text-ink-soft hover:bg-surface hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+      className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-edge bg-transparent p-3 text-ink-soft hover:bg-surface hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
     >
-      <Icon className="size-4" strokeWidth={1.5} />
+      <Icon className="size-3" strokeWidth={1.5} />
     </button>
   )
 }

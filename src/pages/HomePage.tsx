@@ -180,8 +180,8 @@ export function HomePage() {
         <Header>
           {!isEmpty && (
             <div className="flex items-center gap-2">
-              <ClearButton onClick={() => setShowClearModal(true)} />
               <ExportButton onExport={handleExport} isExporting={isExporting} />
+              <ClearButton onClick={() => setShowClearModal(true)} />
             </div>
             
           )}

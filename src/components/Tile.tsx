@@ -18,15 +18,15 @@ export function TileCard({
 }: TileCardProps) {
   return (
     <div
-      className={`overflow-hidden rounded-md border-edge bg-surface ${
+      className={`relative overflow-hidden rounded-md border-edge bg-surface ${
         isOverlay ? 'scale-[1.03] shadow-2xl' : ''
       }`}
     >
       <div
         {...dragHandleProps}
-        className="flex cursor-grab items-center justify-between gap-2 px-3 py-2 active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-insert focus-visible:ring-ink"
+        className="flex cursor-grab items-center justify-between gap-2 border-b border-edge-soft bg-canvas-soft px-3 py-2 active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-insert focus-visible:ring-ink"
       >
-        <span className="truncate font-mono text-xs text-ink-soft">
+        <span className="truncate font-mono text-xs text-ink blur-[0.3px]">
           {image.name}
         </span>
         <GripVertical
@@ -34,7 +34,7 @@ export function TileCard({
           strokeWidth={1.5}
         />
       </div>
-      <div className="relative">
+      <div>
         <img
           src={image.src}
           alt={image.name}
@@ -73,7 +73,7 @@ export function Tile({ image, onRemove }: TileProps) {
       ref={setNodeRef}
       style={style}
       data-mockup-id={image.id}
-      className="group mb-4 break-inside-avoid"
+      className="group mb-4 rounded-md border border-edge-soft shadow-xs break-inside-avoid"
     >
       <TileCard
         image={image}
@@ -82,7 +82,7 @@ export function Tile({ image, onRemove }: TileProps) {
         <button
           onClick={() => onRemove(image.id)}
           aria-label="Remove image"
-          className="absolute left-2 top-2 inline-flex size-6 cursor-pointer items-center justify-center rounded-full border border-edge bg-canvas/70 text-ink opacity-0 backdrop-blur-sm transition group-hover:opacity-100 hover:bg-canvas focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+          className="absolute left-2 top-1 inline-flex size-6 cursor-pointer items-center justify-center rounded-full border border-edge bg-canvas/70 text-ink opacity-0 backdrop-blur-sm transition group-hover:opacity-100 hover:bg-canvas focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
         >
           <X className="size-3.5" strokeWidth={1.25} />
         </button>

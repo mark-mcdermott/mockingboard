@@ -29,7 +29,7 @@ export function ExportButton({ onExport, isExporting }: ExportButtonProps) {
       <button
         onClick={() => setIsOpen((open) => !open)}
         disabled={isExporting}
-        className="inline-flex cursor-pointer items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-medium text-canvas focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:cursor-default disabled:opacity-70"
+        className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-ink px-6 py-3 text-xs font-medium text-canvas hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:cursor-default disabled:opacity-70"
         >
           {isExporting ? (
             <>
@@ -38,7 +38,7 @@ export function ExportButton({ onExport, isExporting }: ExportButtonProps) {
             </>
           ) : (
             <>
-              <Download className="size-4" strokeWidth={1.5} />
+              <Download className="size-3.5" strokeWidth={1.5} />
               Export PNG
             </>
           )}

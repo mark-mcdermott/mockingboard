@@ -10,7 +10,7 @@ export function BoardSurface({ children, isDragging, showError }:
    BoardSurfaceProps) {
   return (
     <section 
-      className={`relative rounded-lg border border-dashed p-4 transition-colors md:p-6 ${
+      className={`relative rounded-xl border border-dashed p-4 transition-colors md:p-6 ${
       isDragging ? 'border-ink-muted' : 'border-edge'
     }`}
     >

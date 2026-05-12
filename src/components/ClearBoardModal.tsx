@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Trash2 } from 'lucide-react'
+import { RotateCcw } from 'lucide-react'
 
 type ClearBoardModalProps = {
   onClose: () => void
@@ -31,7 +31,7 @@ export function ClearBoardModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex size-10 items-center justify-center rounded-full border border-edge">
-          <Trash2 className="size-5 text-ink" strokeWidth={1.5} />
+          <RotateCcw className="size-5 text-ink" strokeWidth={1.5} />
         </div>
         <p 
           id="clear-board-title"
