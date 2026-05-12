@@ -16,6 +16,7 @@ import { ExportToast } from '../components/ExportToast'
 import { SizeWarningModal } from '../components/SizeWarningModal'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { useKeyboardShortcut } from '../hooks/useKeyboardShortcut'
+import { DEMO_IMAGES } from '../lib/demoImages'
 import { 
   IOS_CANVAS_LIMIT,
   computeMaxSafeScale,
@@ -26,7 +27,7 @@ export function HomePage() {
   
   const [images, setImages] = useLocalStorage<Mockup[]>(
     'mockingboard:images',
-    [],
+    DEMO_IMAGES,
   )
   const [dragCount, setDragCount] = useState(0)
   const [sizeModal, setSizeModal] = useState<'reduce' | 'remove' | null>(null)
