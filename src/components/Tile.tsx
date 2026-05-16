@@ -70,7 +70,7 @@ export function Tile({ image, onRemove }: TileProps) {
       data-mockup-id={image.id}
       {...attributes}
       {...listeners}
-      className="group mb-4 cursor-grab rounded-md border border-edge-soft shadow-xs break-inside-avoid active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+      className="group mb-4 cursor-grab rounded-md border border-edge-soft shadow-xs break-inside-avoid transition duration-200 hover:-translate-y-px hover:shadow-md active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
     >
       <TileCard image={image}>
         <button
