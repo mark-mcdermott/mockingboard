@@ -4,9 +4,9 @@
 
 A free, open source tool for arranging mockups into a single shareable image. No accounts, no upload servers, no settings. Drop your screenshots in, rearrange them, and export one PNG.
 
-**Live:** [mockingboard.design](https://mockingboard.design) *(placeholder — update with the real domain after deployment)*
+**Live:** [mockingboard.design](https://mockingboard.design)
 
-![Mockingboard homepage](./branding/mocks/desktop-light.png)
+<p align="center"><a href="https://mockingboard.design"><img src="./assets/mockingboard-hero.png" alt="Mockingboard screenshot" width="900" /></a></p>
 
 ## Features
 
@@ -95,34 +95,5 @@ Issues and pull requests welcome. The project uses conventional commits (`type(s
 
 ## Credits
 
-Built by [floating.is](https://floating.is). Brand mark and visual system courtesy of the same.
+Built by [floating.is](https://floating.is).
 ```
-
-(Note: in the actual file, the three-backtick code fences for the shell blocks should be without the spaces — we wrote them as `` ` ` ` ` here so they don't break this tutorial's own markdown rendering. Use plain triple-backticks in the file.)
-
-### Walking through the structure
-
-A few things worth pointing out:
-
-#### Tagline as a blockquote
-
-```md
-> Drop mockups. Arrange freely. Export one beautiful PNG.
-```
-
-GitHub renders blockquotes with a subtle left border. It's a clean way to make the tagline stand out under the title without using bold or italics.
-
-#### Screenshot path
-
-```md
-![Mockingboard homepage](./branding/mocks/desktop-light.png)
-```
-
-We're pointing at the design mock, not a real app screenshot. Why: until the app is deployed and we have a stable URL with sample content, the mock is the most polished representative image we have. Once you have a live deploy, swap to a real screenshot.
-
-#### Code fences with language tags
-
-```md
-` ` ` sh
-git clone ...
-` ` `
