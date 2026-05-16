@@ -6,15 +6,13 @@ import type { Mockup } from '../types'
 type TileCardProps = {
   image: Mockup
   isOverlay?: boolean
-  dragHandleProps?: React.HTMLAttributes<HTMLDivElement>
   children?: React.ReactNode
 }
 
-export function TileCard({ 
-  image, 
+export function TileCard({
+  image,
   isOverlay = false,
-  dragHandleProps,
-  children,  
+  children,
 }: TileCardProps) {
   return (
     <div
@@ -22,10 +20,7 @@ export function TileCard({
         isOverlay ? 'scale-[1.03] shadow-2xl' : ''
       }`}
     >
-      <div
-        {...dragHandleProps}
-        className="flex cursor-grab items-center justify-between gap-2 border-b border-edge-soft bg-canvas-soft px-3 py-2 active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-insert focus-visible:ring-ink"
-      >
+      <div className="flex items-center justify-between gap-2 border-b border-edge-soft bg-canvas-soft px-3 py-2">
         <span className="truncate font-mono text-xs text-ink blur-[0.3px]">
           {image.name}
         </span>
@@ -69,17 +64,17 @@ export function Tile({ image, onRemove }: TileProps) {
   }
 
   return (
-    <div 
+    <div
       ref={setNodeRef}
       style={style}
       data-mockup-id={image.id}
-      className="group mb-4 rounded-md border border-edge-soft shadow-xs break-inside-avoid"
+      {...attributes}
+      {...listeners}
+      className="group mb-4 cursor-grab rounded-md border border-edge-soft shadow-xs break-inside-avoid active:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
     >
-      <TileCard
-        image={image}
-        dragHandleProps={{ ...attributes, ...listeners }}
-      >
+      <TileCard image={image}>
         <button
+          onPointerDown={(e) => e.stopPropagation()}
           onClick={() => onRemove(image.id)}
           aria-label="Remove image"
           className="absolute left-2 top-1 inline-flex size-6 cursor-pointer items-center justify-center rounded-full border border-edge bg-canvas/70 text-ink opacity-0 backdrop-blur-sm transition group-hover:opacity-100 hover:bg-canvas focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
