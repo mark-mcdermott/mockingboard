@@ -25,20 +25,20 @@ A free, open source tool for arranging mockups into a single shareable image. No
 
 Requirements: Node.js 20.x or higher.
 
-` ` ` sh
+```sh
 git clone https://github.com/mark-mcdermott/mockingboard.git
 cd mockingboard
 npm install
 npm run dev
-` ` `
+```
 
 The dev server runs at http://localhost:5173.
 
 To build for production:
 
-` ` ` sh
+```sh
 npm run build
-` ` `
+```
 
 The static output lands in `dist/` — drop it on Vercel, Netlify, or any static host.
 
@@ -96,4 +96,3 @@ Issues and pull requests welcome. The project uses conventional commits (`type(s
 ## Credits
 
 Built by [floating.is](https://floating.is).
-```
