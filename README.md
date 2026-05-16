@@ -6,7 +6,7 @@ A free, open source tool for arranging mockups into a single shareable image. No
 
 **Live:** [mockingboard.design](https://mockingboard.design)
 
-<p align="center"><a href="https://mockingboard.design"><img src="./assets/mockingboard-hero.png" alt="Mockingboard screenshot" width="900" /></a></p>
+<p align="center"><a href="https://mockingboard.design"><img src="./public/screenshot.png" alt="Mockingboard screenshot" width="900" /></a></p>
 
 ## Features
 
