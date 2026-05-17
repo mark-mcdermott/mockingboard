@@ -116,11 +116,9 @@ export function HomePage() {
       const canvasColor = getComputedStyle(document.documentElement)
         .getPropertyValue('--color-canvas')
         .trim()
-      const dataUrl = await toPng(boardRef.current, {
-        pixelRatio,
-        backgroundColor: canvasColor,
-        skipFonts: true,
-      })
+      const options = { pixelRatio, backgroundColor: canvasColor, skipFonts: true }
+      await toPng(boardRef.current, options)
+      const dataUrl = await toPng(boardRef.current, options)
       const link = document.createElement('a')
       link.download = `mockingboard-${pixelRatio}x.png`
       link.href = dataUrl
