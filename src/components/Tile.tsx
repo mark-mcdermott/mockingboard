@@ -21,7 +21,7 @@ export function TileCard({
       }`}
     >
       <div className="flex items-center justify-between gap-2 border-b border-edge-soft bg-canvas-soft px-3 py-2">
-        <span className="truncate font-mono text-xs text-ink blur-[0.3px]">
+        <span className="truncate font-mono text-xs text-ink">
           {image.name}
         </span>
         <GripVertical
