@@ -1,5 +1,7 @@
 # Mockingboard
 
+[![CI](https://github.com/mark-mcdermott/mockingboard/actions/workflows/ci.yml/badge.svg)](https://github.com/mark-mcdermott/mockingboard/actions/workflows/ci.yml)
+
 > Drop mockups. Arrange freely. Export one beautiful PNG.
 
 A free, open source tool for arranging mockups into a single shareable image. No accounts, no upload servers, no settings. Drop your screenshots in, rearrange them, and export one PNG.

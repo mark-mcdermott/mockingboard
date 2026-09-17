@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "35 6 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # No test suite exists here yet, so the test gate is deliberately empty rather
+  # than pointed at something that would trivially pass. Typecheck is covered by
+  # build, which runs `tsc -b && vite build`.
+  verify:
+    uses: mark-mcdermott/mm-claude-starter/.github/workflows/node-verify.yml@main
+    with:
+      package-manager: npm
+      node-version: "24"
+      lint-script: lint
+      typecheck-script: ""
+      test-script: ""
