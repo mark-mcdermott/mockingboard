@@ -4,9 +4,10 @@ type BoardSurfaceProps = {
   children: React.ReactNode
   isDragging?: boolean
   showError?: boolean
+  ref?: React.Ref<HTMLDivElement>
 }
 
-export function BoardSurface({ children, isDragging, showError }:
+export function BoardSurface({ children, isDragging, showError, ref }:
    BoardSurfaceProps) {
   return (
     <section 
@@ -14,7 +15,7 @@ export function BoardSurface({ children, isDragging, showError }:
       isDragging ? 'border-ink-muted' : 'border-edge'
     }`}
     >
-      <div>
+      <div ref={ref} className="p-4 md:p-6">
         {children}
       </div>
       {isDragging && (
