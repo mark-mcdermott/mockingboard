@@ -57,13 +57,12 @@ export function Board({ images, onRemove, onReorder, ref }: BoardProps) {
         items={images.map((img) => img.id)}
         strategy={rectSortingStrategy}
       >
-        <div
-          ref={ref}
-          className="columns-1 gap-4 md:columns-2 lg:columns-3 xl:columns-4"
-        >
-          {images.map((image) => (
-            <Tile key={image.id} image={image} onRemove={onRemove} />
-          ))}
+        <div ref={ref} className="p-4 md:p-6">
+          <div className="columns-1 gap-4 md:columns-2 lg:columns-3 xl:columns-4">
+            {images.map((image) => (
+              <Tile key={image.id} image={image} onRemove={onRemove} />
+            ))}
+          </div>
         </div>
       </SortableContext>
       <DragOverlay>
