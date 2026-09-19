@@ -187,12 +187,11 @@ export function HomePage() {
         </Header>
         <Hero />
         <main className="pb-8">
-          <BoardSurface isDragging={isDragging} showError={showError}>
+          <BoardSurface ref={boardRef} isDragging={isDragging} showError={showError}>
             {isEmpty ? (
               <EmptyState onFilesPicked={handleFiles} />
             ) : (
               <Board 
-                ref={boardRef} 
                 images={images} 
                 onRemove={handleRemove} 
                 onReorder={handleReorder}  
