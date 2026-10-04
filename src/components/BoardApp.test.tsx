@@ -59,6 +59,19 @@ function dropFiles(...files: File[]) {
   })
 }
 
+/**
+ * fireEvent's drag events carry no relatedTarget under jsdom, and that field is
+ * exactly what separates "moved onto another element" from "left the window".
+ * A MouseEvent does carry it.
+ */
+function dragLeaveTo(relatedTarget: EventTarget | null) {
+  act(() => {
+    window.dispatchEvent(
+      new MouseEvent('dragleave', { bubbles: true, relatedTarget }),
+    )
+  })
+}
+
 describe('adding mockups', () => {
   it('starts with the demo board so a first visit is not an empty canvas', () => {
     renderApp()
@@ -118,6 +131,31 @@ describe('adding mockups', () => {
     expect(screen.getByText(/drop to add your mockups/i)).toBeInTheDocument()
 
     fireEvent.dragLeave(window)
+    expect(screen.queryByText(/drop to add your mockups/i)).not.toBeInTheDocument()
+  })
+
+  it('keeps the invitation up while the drag moves between elements', () => {
+    renderApp()
+
+    // Moving across nested elements fires an enter for each one before the
+    // matching leaves arrive; the overlay must not flicker off in between.
+    fireEvent.dragEnter(window)
+    fireEvent.dragEnter(window)
+    dragLeaveTo(document.body)
+
+    expect(screen.getByText(/drop to add your mockups/i)).toBeInTheDocument()
+  })
+
+  it('dismisses the invitation when the drag leaves the window unevenly', () => {
+    renderApp()
+
+    fireEvent.dragEnter(window)
+    fireEvent.dragEnter(window)
+    // Leaving the window reports no relatedTarget, and only one leave arrives
+    // for the two enters. Unwinding the counter by one would stand the overlay
+    // open for good.
+    dragLeaveTo(null)
+
     expect(screen.queryByText(/drop to add your mockups/i)).not.toBeInTheDocument()
   })
 })
