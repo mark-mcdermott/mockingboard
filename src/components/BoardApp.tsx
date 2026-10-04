@@ -80,7 +80,15 @@ export function BoardApp() {
     }
     const onLeave = (e: DragEvent) => {
       e.preventDefault()
-      setDragCount((c) => c - 1)
+      // Leaving the window reports no relatedTarget. Without this the counter
+      // only unwinds one enter per leave, so a pair missed on the way out --
+      // dragging off the window quickly, or over devtools -- strands the
+      // "drop to add" overlay open until the next drop.
+      if (!e.relatedTarget) {
+        setDragCount(0)
+        return
+      }
+      setDragCount((c) => Math.max(0, c - 1))
     }
     const onOver = (e: DragEvent) => e.preventDefault()
     const onDrop = (e: DragEvent) => {
@@ -88,16 +96,19 @@ export function BoardApp() {
       setDragCount(0)
       void handleFiles(e.dataTransfer?.files ?? null)
     }
+    const onEnd = () => setDragCount(0)
 
     window.addEventListener('dragenter', onEnter)
     window.addEventListener('dragleave', onLeave)
     window.addEventListener('dragover', onOver)
     window.addEventListener('drop', onDrop)
+    window.addEventListener('dragend', onEnd)
     return () => {
       window.removeEventListener('dragenter', onEnter)
       window.removeEventListener('dragleave', onLeave)
       window.removeEventListener('dragover', onOver)
       window.removeEventListener('drop', onDrop)
+      window.removeEventListener('dragend', onEnd)
     }
   }, [handleFiles])
 
