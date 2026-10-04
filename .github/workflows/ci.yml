@@ -5,20 +5,40 @@ on:
     branches: [main]
   pull_request:
   schedule:
+    # Daily, so the badge means "still green today" rather than "was green on
+    # the last push". Offset off the hour — GitHub delays on-the-hour crons.
     - cron: "35 6 * * *"
 
+# A new push to the same branch supersedes the run in flight.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  # Typecheck is covered by build, which runs `tsc -b && vite build` over src,
-  # tests included.
   verify:
-    uses: mark-mcdermott/mm-claude-starter/.github/workflows/node-verify.yml@main
-    with:
-      package-manager: npm
-      node-version: "24"
-      lint-script: lint
-      typecheck-script: ""
-      test-script: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      # Node major is pinned — an unpinned toolchain rots CI with no commit to
+      # blame.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # Separate steps so a red run names which gate failed.
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      # Doubles as the typecheck gate: build is `tsc -b && vite build` over
+      # src, tests included, so a separate typecheck step would only repeat it.
+      - name: Build
+        run: npm run build
