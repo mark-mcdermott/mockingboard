@@ -1,11 +1,11 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
+// Astro owns the app build (astro.config.mjs); this config exists only so
+// vitest can compile the React island components under jsdom.
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react()],
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],

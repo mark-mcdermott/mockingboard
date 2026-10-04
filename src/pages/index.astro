@@ -1,0 +1,25 @@
+---
+import Layout from "../layouts/Layout.astro"
+import Header from "../components/Header.astro"
+import Hero from "../components/Hero.astro"
+import { BoardApp } from "../components/BoardApp"
+import { PrivacyNote } from "../components/PrivacyNote"
+---
+
+<Layout
+  title="Mockingboard"
+  description="Drop mockups. Arrange freely. Export one beautiful PNG."
+>
+  <div class="flex flex-1 flex-col">
+    <div class="mx-auto w-full max-w-7xl flex-1 px-5 md:px-12">
+      <Header boardActions />
+      <Hero />
+      <main class="pb-8">
+        {/* The board is the only genuinely interactive part of the site, and it
+            reads localStorage on mount, so it hydrates client-side only. */}
+        <BoardApp client:only="react" />
+        <PrivacyNote />
+      </main>
+    </div>
+  </div>
+</Layout>

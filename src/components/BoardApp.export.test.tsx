@@ -2,8 +2,8 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { toPng } from 'html-to-image'
-import { HomePage } from './HomePage'
-import { mockup, renderWithRouter, seedBoard, stubElementSize } from '../test/utils'
+import { BoardApp } from './BoardApp'
+import { mockup, renderBoard, seedBoard, stubElementSize } from '../test/utils'
 
 vi.mock('html-to-image', () => ({ toPng: vi.fn() }))
 
@@ -13,10 +13,10 @@ const SECOND_RENDER = 'data:image/png;base64,c2Vjb25k'
 
 let downloads: { download: string; href: string }[]
 
-function renderBoard(width: number, height: number) {
+function renderApp(width: number, height: number) {
   seedBoard(mockup('a'), mockup('b'))
   stubElementSize(width, height)
-  return renderWithRouter(<HomePage />)
+  return renderBoard(<BoardApp />)
 }
 
 /** Lets any export that was going to start actually start. */
@@ -45,7 +45,7 @@ beforeEach(() => {
 
 describe('PNG export', () => {
   it('renders the board at the chosen scale and downloads it', async () => {
-    renderBoard(800, 600)
+    renderApp(800, 600)
     await exportAt(/standard/i)
 
     await waitFor(() => expect(downloads).toHaveLength(1))
@@ -58,7 +58,7 @@ describe('PNG export', () => {
   })
 
   it('exports the tiles only, not the surrounding page chrome', async () => {
-    renderBoard(800, 600)
+    renderApp(800, 600)
     await exportAt(/standard/i)
 
     await waitFor(() => expect(toPng).toHaveBeenCalled())
@@ -72,7 +72,7 @@ describe('PNG export', () => {
   // twice and the second result is the one that ships. Collapsing this back to a
   // single call is the regression this guards.
   it('renders twice and downloads the second pass', async () => {
-    renderBoard(800, 600)
+    renderApp(800, 600)
     await exportAt(/standard/i)
 
     await waitFor(() => expect(downloads).toHaveLength(1))
@@ -81,7 +81,7 @@ describe('PNG export', () => {
   })
 
   it('exports at 3x when Large is chosen', async () => {
-    renderBoard(800, 600)
+    renderApp(800, 600)
     await exportAt(/large/i)
 
     await waitFor(() => expect(downloads).toHaveLength(1))
@@ -90,7 +90,7 @@ describe('PNG export', () => {
   })
 
   it('resolves Max safe to the largest scale the board still fits at', async () => {
-    renderBoard(1300, 1300)
+    renderApp(1300, 1300)
     await exportAt(/max safe/i)
 
     await waitFor(() => expect(downloads).toHaveLength(1))
@@ -98,7 +98,7 @@ describe('PNG export', () => {
   })
 
   it('steps Max safe down as the board grows', async () => {
-    renderBoard(1500, 1500)
+    renderApp(1500, 1500)
     await exportAt(/max safe/i)
 
     await waitFor(() => expect(downloads).toHaveLength(1))
@@ -109,7 +109,7 @@ describe('PNG export', () => {
   // dnd-kit keeps its own role="status" live region mounted, so the toast is
   // matched by its text rather than by role alone.
   it('confirms the exported scale in a dismissible toast', async () => {
-    renderBoard(800, 600)
+    renderApp(800, 600)
     await exportAt(/large/i)
 
     const toast = await screen.findByText(/^Exported PNG at 3x$/)
@@ -130,7 +130,7 @@ describe('PNG export', () => {
         }),
       )
 
-    renderBoard(800, 600)
+    renderApp(800, 600)
     await exportAt(/standard/i)
 
     const button = await screen.findByRole('button', { name: /exporting/i })
@@ -144,7 +144,7 @@ describe('PNG export', () => {
 
 describe('the export keyboard shortcut', () => {
   it('exports at 2x on Cmd+E', async () => {
-    renderBoard(800, 600)
+    renderApp(800, 600)
 
     fireEvent.keyDown(window, { key: 'e', metaKey: true })
 
@@ -153,7 +153,7 @@ describe('the export keyboard shortcut', () => {
   })
 
   it('ignores a bare E, so typing never triggers a download', async () => {
-    renderBoard(800, 600)
+    renderApp(800, 600)
 
     fireEvent.keyDown(window, { key: 'e' })
     await settle()
@@ -167,7 +167,7 @@ describe('the export keyboard shortcut', () => {
   it('does nothing on an empty board', async () => {
     seedBoard()
     stubElementSize(800, 600)
-    renderWithRouter(<HomePage />)
+    renderBoard(<BoardApp />)
 
     fireEvent.keyDown(window, { key: 'e', metaKey: true })
     await settle()
@@ -179,7 +179,7 @@ describe('the export keyboard shortcut', () => {
 
 describe('oversized boards', () => {
   it('refuses a scale that would blow the canvas limit and offers to reduce it', async () => {
-    renderBoard(2500, 2500)
+    renderApp(2500, 2500)
     await exportAt(/large/i)
 
     expect(await screen.findByRole('dialog')).toHaveTextContent('Try reducing scale.')
@@ -189,7 +189,7 @@ describe('oversized boards', () => {
   })
 
   it('exports at 1x when the warning offers to reduce scale', async () => {
-    renderBoard(2500, 2500)
+    renderApp(2500, 2500)
     await exportAt(/large/i)
 
     await userEvent.setup().click(await screen.findByRole('button', { name: /reduce scale/i }))
@@ -201,7 +201,7 @@ describe('oversized boards', () => {
   })
 
   it('asks for tiles to be removed when even 1x will not fit', async () => {
-    renderBoard(5000, 5000)
+    renderApp(5000, 5000)
     await exportAt(/large/i)
 
     const dialog = await screen.findByRole('dialog')
