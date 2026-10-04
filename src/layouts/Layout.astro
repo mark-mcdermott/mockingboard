@@ -6,12 +6,14 @@ import Footer from "../components/Footer.astro"
 type Props = {
   title: string
   description?: string
+  /** Off for the 404 page: a not-found response should not name a canonical URL. */
+  canonical?: boolean
 }
 
 const SITE_DESCRIPTION =
   "A free, open source tool for arranging mockups into a single exportable PNG. Drop, arrange, export — no accounts, no upload, no settings."
 
-const { title, description = SITE_DESCRIPTION } = Astro.props
+const { title, description = SITE_DESCRIPTION, canonical: withCanonical = true } = Astro.props
 const canonical = new URL(Astro.url.pathname, Astro.site).href
 const ogImage = new URL("/og-image.png", Astro.site).href
 ---
@@ -43,7 +45,7 @@ const ogImage = new URL("/og-image.png", Astro.site).href
     <meta name="theme-color" content="#FAF6F1" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0E0E0E" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={canonical} />
+    {withCanonical && <link rel="canonical" href={canonical} />}
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />

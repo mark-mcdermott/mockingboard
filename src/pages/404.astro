@@ -3,7 +3,11 @@ import Layout from "../layouts/Layout.astro"
 import Header from "../components/Header.astro"
 ---
 
-<Layout title="Page not found — Mockingboard" description="That page does not exist.">
+<Layout
+  title="Page not found — Mockingboard"
+  description="That page does not exist."
+  canonical={false}
+>
   <div class="mx-auto w-full max-w-7xl flex-1 px-5 md:px-12">
     <Header />
     <main class="py-16 text-center">
