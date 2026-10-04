@@ -1,11 +1,27 @@
 import { render, type RenderResult } from '@testing-library/react'
 import { vi } from 'vitest'
-import { MemoryRouter } from 'react-router'
 import type { ReactElement } from 'react'
 import type { Mockup } from '../types'
+import { BOARD_ACTIONS_ID } from '../lib/domIds'
 
-export function renderWithRouter(ui: ReactElement): RenderResult {
-  return render(<MemoryRouter>{ui}</MemoryRouter>)
+/**
+ * In the app the header is prerendered by Astro and the island portals its
+ * Export/Clear controls into a node inside it. Tests reproduce that node —
+ * inside a real <header>, since the suites locate those controls by the
+ * banner role — or the controls render nowhere and every query fails.
+ */
+export function renderBoard(ui: ReactElement): RenderResult {
+  const header = document.createElement('header')
+  const mount = document.createElement('div')
+  mount.id = BOARD_ACTIONS_ID
+  header.append(mount)
+  document.body.append(header)
+  return render(ui)
+}
+
+/** Clears the header fixture between tests; called from the setup file. */
+export function cleanupBoardFixture(): void {
+  document.querySelectorAll('header').forEach((el) => el.remove())
 }
 
 export function imageFile(name: string, type = 'image/png'): File {

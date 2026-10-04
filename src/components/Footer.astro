@@ -1,0 +1,42 @@
+---
+// NavLink's isActive became a pathname comparison: an MPA knows the current
+// route at build time, so the active style needs no client JS.
+const path = Astro.url.pathname
+
+const LINKS = [
+  { href: "/about", label: "About" },
+  { href: "https://github.com/mark-mcdermott/mockingboard", label: "Github", external: true },
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
+]
+
+const isActive = (href: string) => path === href || path === `${href}/`
+---
+
+<footer class="bg-surface py-6 text-xs text-ink-soft font-serif font-normal">
+  <div
+    class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 px-5 md:flex-row md:items-center md:px-12"
+  >
+    <p>
+      Mockingboard is a free, open source tool
+      <br />
+      by <a
+        href="https://floating.is"
+        class="underline text-ink font-bold hover:text-ink-soft">floating.is</a
+      >
+    </p>
+    <nav class="flex items-center gap-6">
+      {
+        LINKS.map(({ href, label, external }) => (
+          <a
+            href={href}
+            class:list={["text-ink-bold hover:underline", { "font-bold": !external && isActive(href) }]}
+            aria-current={!external && isActive(href) ? "page" : undefined}
+          >
+            {label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</footer>

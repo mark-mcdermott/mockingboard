@@ -1,20 +1,20 @@
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
-import { HomePage } from './HomePage'
+import { BoardApp } from './BoardApp'
 import { DEMO_IMAGES } from '../lib/demoImages'
 import {
   fileList,
   imageFile,
   mockup,
-  renderWithRouter,
+  renderBoard,
   seedBoard,
 } from '../test/utils'
 
 const STORAGE_KEY = 'mockingboard:images'
 
-function renderBoard() {
-  return renderWithRouter(<HomePage />)
+function renderApp() {
+  return renderBoard(<BoardApp />)
 }
 
 function tileNames(): string[] {
@@ -48,28 +48,32 @@ function storedNames(): string[] {
   return raw ? (JSON.parse(raw) as { name: string }[]).map((img) => img.name) : []
 }
 
-/** jsdom has no DataTransfer, so the drop payload is supplied directly. */
+/**
+ * jsdom has no DataTransfer, so the drop payload is supplied directly. The
+ * island listens on the window — the page chrome it used to wrap is now
+ * prerendered outside it — so that is where the event is fired.
+ */
 function dropFiles(...files: File[]) {
-  fireEvent.drop(screen.getByRole('main'), {
+  fireEvent.drop(window, {
     dataTransfer: { files: fileList(...files) },
   })
 }
 
 describe('adding mockups', () => {
   it('starts with the demo board so a first visit is not an empty canvas', () => {
-    renderBoard()
+    renderApp()
     expect(tileNames()).toEqual(DEMO_IMAGES.map((img) => img.name))
   })
 
   it('restores a saved board instead of the demos', () => {
     seedBoard(mockup('saved-one'), mockup('saved-two'))
-    renderBoard()
+    renderApp()
     expect(tileNames()).toEqual(['saved-one.png', 'saved-two.png'])
   })
 
   it('appends dropped images to the end of the board', async () => {
     seedBoard(mockup('existing'))
-    renderBoard()
+    renderApp()
 
     dropFiles(imageFile('hero.png'), imageFile('pricing.jpg', 'image/jpeg'))
 
@@ -80,7 +84,7 @@ describe('adding mockups', () => {
 
   it('reads each dropped file into the tile it renders', async () => {
     seedBoard()
-    renderBoard()
+    renderApp()
 
     dropFiles(imageFile('hero.png'))
 
@@ -90,7 +94,7 @@ describe('adding mockups', () => {
 
   it('persists dropped images so the board survives a reload', async () => {
     seedBoard(mockup('existing'))
-    renderBoard()
+    renderApp()
 
     dropFiles(imageFile('hero.png'))
 
@@ -99,7 +103,7 @@ describe('adding mockups', () => {
 
   it('accepts images picked through the empty-state file input', async () => {
     seedBoard()
-    renderBoard()
+    renderApp()
 
     await userEvent.setup().upload(getFilePicker(), imageFile('hero.png'))
 
@@ -108,13 +112,12 @@ describe('adding mockups', () => {
   })
 
   it('invites a drop while files are dragged over the page', () => {
-    renderBoard()
-    const surface = screen.getByRole('main')
+    renderApp()
 
-    fireEvent.dragEnter(surface)
+    fireEvent.dragEnter(window)
     expect(screen.getByText(/drop to add your mockups/i)).toBeInTheDocument()
 
-    fireEvent.dragLeave(surface)
+    fireEvent.dragLeave(window)
     expect(screen.queryByText(/drop to add your mockups/i)).not.toBeInTheDocument()
   })
 })
@@ -122,7 +125,7 @@ describe('adding mockups', () => {
 describe('rejecting non-images', () => {
   it('refuses a drop of non-image files and says why', async () => {
     seedBoard(mockup('existing'))
-    renderBoard()
+    renderApp()
 
     dropFiles(new File(['notes'], 'spec.pdf', { type: 'application/pdf' }))
 
@@ -132,7 +135,7 @@ describe('rejecting non-images', () => {
 
   it('keeps the images from a mixed drop and still flags the rest', async () => {
     seedBoard()
-    renderBoard()
+    renderApp()
 
     dropFiles(
       imageFile('hero.png'),
@@ -147,7 +150,7 @@ describe('rejecting non-images', () => {
     vi.useFakeTimers()
     try {
       seedBoard(mockup('existing'))
-      renderBoard()
+      renderApp()
 
       dropFiles(new File(['notes'], 'spec.pdf', { type: 'application/pdf' }))
       expect(screen.getByText(/only image files supported/i)).toBeInTheDocument()
@@ -165,7 +168,7 @@ describe('rejecting non-images', () => {
 describe('removing mockups', () => {
   it('removes the tile whose button was clicked, not its neighbours', async () => {
     seedBoard(mockup('a'), mockup('b'), mockup('c'))
-    renderBoard()
+    renderApp()
 
     await userEvent
       .setup()
@@ -177,7 +180,7 @@ describe('removing mockups', () => {
 
   it('removes the focused tile on Backspace', () => {
     seedBoard(mockup('a'), mockup('b'))
-    renderBoard()
+    renderApp()
 
     tileFor('a.png').focus()
     fireEvent.keyDown(window, { key: 'Backspace' })
@@ -187,7 +190,7 @@ describe('removing mockups', () => {
 
   it('leaves the board alone when Backspace is pressed off a tile', () => {
     seedBoard(mockup('a'), mockup('b'))
-    renderBoard()
+    renderApp()
 
     fireEvent.keyDown(window, { key: 'Backspace' })
 
@@ -196,7 +199,7 @@ describe('removing mockups', () => {
 
   it('empties the board only once clearing is confirmed', async () => {
     seedBoard(mockup('a'), mockup('b'))
-    renderBoard()
+    renderApp()
     const user = userEvent.setup()
 
     await user.click(headerButton(/clear board/i))
@@ -216,7 +219,7 @@ describe('removing mockups', () => {
 
   it('hides the export and clear controls once the board is empty', () => {
     seedBoard()
-    renderBoard()
+    renderApp()
 
     expect(screen.queryByRole('button', { name: /export png/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /clear board/i })).not.toBeInTheDocument()

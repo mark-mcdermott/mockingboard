@@ -21,24 +21,31 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # Must precede setup-node, which needs pnpm on PATH to resolve its cache.
+      # The version comes from packageManager in package.json, so it lives in
+      # one place.
+      - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: package.json
+
       # Node major is pinned — an unpinned toolchain rots CI with no commit to
       # blame.
       - uses: actions/setup-node@v7
         with:
           node-version: "24"
-          cache: npm
+          cache: pnpm
 
       - name: Install
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       # Separate steps so a red run names which gate failed.
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Test
-        run: npm test
+        run: pnpm run test
 
-      # Doubles as the typecheck gate: build is `tsc -b && vite build` over
-      # src, tests included, so a separate typecheck step would only repeat it.
+      # Doubles as the typecheck gate: build is `astro check && astro build`,
+      # so a separate typecheck step would only repeat it.
       - name: Build
-        run: npm run build
+        run: pnpm run build

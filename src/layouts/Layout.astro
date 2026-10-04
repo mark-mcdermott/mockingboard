@@ -1,0 +1,77 @@
+---
+import "../index.css"
+import { Analytics } from "@vercel/analytics/react"
+import Footer from "../components/Footer.astro"
+
+type Props = {
+  title: string
+  description?: string
+  /** Off for the 404 page: a not-found response should not name a canonical URL. */
+  canonical?: boolean
+}
+
+const SITE_DESCRIPTION =
+  "A free, open source tool for arranging mockups into a single exportable PNG. Drop, arrange, export — no accounts, no upload, no settings."
+
+const { title, description = SITE_DESCRIPTION, canonical: withCanonical = true } = Astro.props
+const canonical = new URL(Astro.url.pathname, Astro.site).href
+const ogImage = new URL("/og-image.png", Astro.site).href
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+
+    <title>{title}</title>
+
+    {/* Before first paint, so a stored theme never flashes the other one. */}
+    <script is:inline>
+      (() => {
+        try {
+          const t = localStorage.getItem("mockingboard:theme")
+          if (t === "light" || t === "dark") {
+            document.documentElement.setAttribute("data-theme", t)
+          }
+        } catch {
+          /* localStorage unavailable (private browsing, etc) - ignore */
+        }
+      })()
+    </script>
+
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#FAF6F1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0E0E0E" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {withCanonical && <link rel="canonical" href={canonical} />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500&family=DM+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="flex min-h-screen flex-col text-ink">
+      <slot />
+      <Footer />
+    </div>
+    <Analytics client:idle />
+  </body>
+</html>
